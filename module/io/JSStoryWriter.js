@@ -1,14 +1,17 @@
 const fs = require('fs');
+const Logger = require('../Logger.js');
 
 class JSStoryWriter {
 
+  LOG;
   COMPONENT_IMPORT_PATH = "../../../component/";
   STORIES_PATH = "\\stories\\_stories\\common\\";
 
-  constructor() { }
+  constructor() { this.LOG = new Logger(); }
 
   writeStoryJs(story, fileName) {
     fs.writeFileSync(fileName, this._createJSFile(story));
+    this.LOG.executeLogger(fileName, "WRITE");
   }
 
   deleteStoryJs(removePath) {
@@ -22,27 +25,30 @@ class JSStoryWriter {
       if (err) {
         console.log(`${filePath} delete fail!`, err);
       } else {
-        console.log(`${filePath} delete success`);
+        this.LOG.executeLogger(filePath, "DELETE");
       };
     })
   }
 
-
-  // ToDo: argTypes에 description 추가
   _createJSFile(story) {
     return `import ${story.component} from '${this.COMPONENT_IMPORT_PATH + story.component + ".js"}'; \r\n\r\n` +
       `// This file is written by AutoDocs (not Storybook's addon)! \r\n` +
       `// 담당자: ${story.author} \r\n\r\n` +
       `const Meta = { \r\n\t` +
       `title: "${story.title}", \r\n\t` +
-      `component: ${story.component} \r\n\r\n` +
+      `component: ${story.component}, \r\n\t` +
+      `argTypes: { \r\n\t\t` +
+      `${Object.keys(story.prop).map((v, i) => {
+        return `${v}: { \r\n\t\t description: "${story.prop[v]}" \r\n\t }
+      `})}` +
       `} \r\n` +
+      `} \r\n\r\n` +
       `export default Meta; \r\n\r\n` +
       `export const ${story.component + "Story"} = { \r\n\t` +
       `args: { \r\n\t\t` +
       `${Object.keys(story.prop).map((v, i) => {
         return `${v}:'example-value' \n\t\t`;
-      })} \r\n` +
+      })} \t` +
       `} \r\n` +
       `} \r\n`;
   }

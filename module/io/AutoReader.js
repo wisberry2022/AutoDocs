@@ -1,19 +1,20 @@
 const fs = require('fs');
 const path = require('path');
-
+const Logger = require('../Logger.js');
 
 class AutoReader {
 
+  LOG;
   fileMap = new Map();
 
-  constructor() { }
+  constructor() { this.LOG = new Logger(); }
 
   readJSFile(filePath) {
     let file = path.basename(filePath);
     const lines = fs.readFileSync(filePath, {
       encoding: "utf8", flag: "r"
     }).split("\r\n");
-
+    this.LOG.executeLogger(filePath, "READ");
     this._extractInfo(file, lines);
   }
 
@@ -38,14 +39,19 @@ class AutoReader {
     } catch (error) {
 
     }
-
+    this.LOG.executeLogger(fileName, "EXTRACT", obj);
     this.fileMap.set(fileName, obj);
   }
 
   _staticAnalysis(strArr) {
-    const targets = strArr.filter(line => line.includes("export"));
-    const line = targets[0].split(" ");
-    return line[line.length - 1].replace(";", "").trim();
+    try {
+      const targets = strArr.filter(line => line.includes("export"));
+      const line = targets[0].split(" ");
+      return line[line.length - 1].replace(";", "").trim();
+    } catch (err) {
+      console.log(err);
+    }
+
   }
 
   _extractProp(strPair) {

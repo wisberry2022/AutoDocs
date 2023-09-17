@@ -7,7 +7,6 @@ class StoryWriter {
   FILE_MAP = { story: ".stories.js", mdx: ".mdx" }
   STORIES_PATH = "\\stories\\_stories\\common\\";
   // ToDo: 실제 프로젝트에 맞는 경로 재설정 필요
-
   TARGET_PATH;
 
   story;
@@ -26,8 +25,13 @@ class StoryWriter {
   }
 
   write() {
-    this.JsStoryWriter.writeStoryJs(this.story, this._getFileName('story'));
-    this.MdxWriter.writeMdx(this.story, this._getFileName('mdx'));
+    try {
+      this.JsStoryWriter.writeStoryJs(this.story, this._getFileName('story'));
+      this.MdxWriter.writeMdx(this.story, this._getFileName('mdx'));
+    } catch (error) {
+      console.log(error);
+    }
+
   }
 
   delete(removePath) {

@@ -1,20 +1,37 @@
+import * as TestButtonStories from './TestButton.stories.js'; 
+import {Meta, Story, Source, Controls} from '@storybook/blocks'; 
 import * as TempButtonStories from './TempButton.stories.js'; 
-import {Meta, Story, Controls, Source} from '@storybook/blocks';
-import * as TestButtonStories from './TestButton.stories.js';
 
-<Meta of={TestButtonStories} />
+<Meta of={TempButtonStories} /> 
 
-<Story of={TestButtonStories.TestButtonStory} />
- 
+# 공통 컴포넌트 
 
- 
- 
-
- 
 ## TempButton  담당자:  왕인서 
 <Story of={TempButtonStories.TempButtonStory} /> 
 <Controls of={TempButtonStories.TempButtonStory} /> 
 <Source of={TempButtonStories.TempButtonStory} /> 
+ 
+
+ 
+ 
+
+ 
+## TestButton  담당자:  우동현2 
+<Story of={TestButtonStories.TestButtonStory} /> 
+<Controls of={TestButtonStories.TestButtonStory} /> 
+<Source of={TestButtonStories.TestButtonStory} /> 
+ 
+
+ 
+ 
+
+ 
+ 
+
+ 
+ 
+
+ 
  
 
  

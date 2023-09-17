@@ -1,8 +1,8 @@
 const chokidar = require('chokidar');
 const fs = require('fs');
 const path = require('path');
-const DirectoryWatcher = require('./module/DirWatcher');
-const FileWatcher = require('./module/FileWatcher');
+const FileWatcher = require('./module/watcher/FileWatcher');
+const DirectoryWatcher = require('./module/watcher/DirWatcher');
 
 const WORK_PATH = __dirname + "\\src";
 

@@ -1,9 +1,11 @@
 const chokidar = require('chokidar');
 const fs = require('fs');
-const StoryWriter = require('./StoryWriter.js');
+const StoryWriter = require('../io/StoryWriter.js');
+const Logger = require('../Logger.js');
 
 class FileWatcher {
 
+  LOG;
   COMPONENT_PATH = "\\component\\";
   TARGET_PATH;
   fileList = [];
@@ -11,6 +13,7 @@ class FileWatcher {
   writer;
 
   constructor(PATH) {
+    this.LOG = new Logger();
     this.TARGET_PATH = PATH + this.COMPONENT_PATH;
     this.writer = new StoryWriter(PATH);
   }
@@ -32,6 +35,7 @@ class FileWatcher {
   _watch(reader) {
     this.watcherList.forEach(watcher => {
       watcher.on('change', async (path) => {
+        this.LOG.executeLogger(path, "CHANGE")
         reader.readJSFile(path);
         const result = await reader.getStoryOption(path);
         this.writer.setStory(result);

@@ -1,17 +1,20 @@
 const fs = require('fs');
 const path = require('path');
+const Logger = require('../Logger.js');
 
 class MdxWriter {
 
+  LOG;
   STORY_IMPORT_PATH = "./";
   STORYBOOK_IMPORT_PATH = "'@storybook/blocks'";
 
-  constructor() { }
+  constructor() { this.LOG = new Logger(); }
 
   writeMdx(story, fileName) {
     const mdx = this._readCurrentMDX(fileName);
     if (mdx === "") {
-      // ToDo: 최초로 Common 파일 만든 뒤, 변경된 컴포넌트 기반으로 Common.mdx 작성 로직 구성
+      fs.writeFileSync(fileName, this._initialize(story, fileName))
+      this.LOG.executeLogger(fileName, "WRITE");
       return;
     }
 
@@ -19,6 +22,7 @@ class MdxWriter {
       return;
     }
     fs.writeFileSync(fileName, this._createMDXFile(mdx, story));
+    this.LOG.executeLogger(fileName, "WRITE");
   }
 
 
@@ -40,7 +44,9 @@ class MdxWriter {
     const stories = path.basename(removePath).split(".js")[0];
     const mdx = this._readCurrentMDX(fileName);
     const target = mdx.split("\r\n");
-    const filtered = target.filter(line => !line.includes(stories));
+    const filtered = target.filter(line => (!line.includes(stories + "Stories") && !line.includes("## " + stories + "  담당자")));
+    // console.log('stories: ', stories);
+    // console.log("delete filtered: ", filtered);
     fs.writeFileSync(fileName, filtered.join("\r\n"));
   }
 
@@ -63,8 +69,18 @@ class MdxWriter {
   }
 
   // 최초로 Common.mdx 만들 때
-  _initialize(story, fileName) {
-    const importLine = `import {Meta, Story, Source, Controls} from ${this.STORYBOOK_IMPORT_PATH};`;
+  _initialize(story) {
+    const importingStoryFileName = story.component + "Stories";
+    const storyName = story.component + "Story";
+
+    return `import {Meta, Story, Source, Controls} from ${this.STORYBOOK_IMPORT_PATH}; \r\n` +
+      `import * as ${importingStoryFileName} from '${this.STORY_IMPORT_PATH + story.component + ".stories.js"}'; \r\n\r\n` +
+      `<Meta of={${importingStoryFileName}} /> \r\n\r\n` +
+      `# 공통 컴포넌트 \r\n\r\n` +
+      `## ${story.component}  담당자:  ${story.author} \r\n` +
+      `<Story of={${importingStoryFileName}.${storyName}} /> \r\n` +
+      `<Controls of={${importingStoryFileName}.${storyName}} /> \r\n` +
+      `<Source of={${importingStoryFileName}.${storyName}} /> \r\n \r\n`;
   }
 
 }
