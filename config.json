@@ -1,0 +1,11 @@
+{
+  "entry": "/src/component",
+  "folder": [
+    "common",
+    "manager",
+    "webank"
+  ],
+  "depth": "0",
+  "createMDX": false,
+  "createStories": true
+}

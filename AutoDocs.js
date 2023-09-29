@@ -1,10 +1,18 @@
 const chokidar = require('chokidar');
 const fs = require('fs');
 const path = require('path');
-const FileWatcher = require('./module/watcher/FileWatcher');
-const DirectoryWatcher = require('./module/watcher/DirWatcher');
+const ConfigReader = require('./module/config/ConfigReader');
+const WatcherManager = require('./module/watcher/WatcherManager');
 
-const WORK_PATH = __dirname + "\\src";
+const getConfig = () => {
+  const reader = new ConfigReader(__dirname);
+  reader.readJSON();
+  const config = reader.getConfigObj();
+  return { ...config, srcs: reader.getTargetPath() };
+}
 
-const dirWatcher = new DirectoryWatcher(WORK_PATH, new FileWatcher(WORK_PATH));
-dirWatcher.watchDir();
+const config = getConfig();
+const Manager = new WatcherManager(config);
+Manager.active();
+// const dirWatcher = new DirectoryWatcher(WORK_PATH, new FileWatcher(WORK_PATH));
+// dirWatcher.watchDir();
