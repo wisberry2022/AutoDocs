@@ -22,7 +22,7 @@ class DirWatcher extends Watcher {
     const watcher = chokidar.watch(this._PATH);
     watcher.on('add', paths => {
       this._fileWatcher.active(paths);
-    });
+    })
   }
 
 
