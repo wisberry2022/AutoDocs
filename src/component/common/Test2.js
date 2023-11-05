@@ -18,3 +18,7 @@ const Test3 = (props) => {
 }
 
 export { Test3 }
+
+const getId = (name) => {
+  return Test2();
+}

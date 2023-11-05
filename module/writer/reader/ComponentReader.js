@@ -1,6 +1,9 @@
 const fs = require('fs');
 const babel = require('@babel/core');
 
+// React Component 추출 조건
+// 0. 리액트 컴포넌트를 반환하는 변수여야 함.
+// 1. export가 포함되어 있어야 함.
 class ComponentReader {
 
   _address;
@@ -21,23 +24,49 @@ class ComponentReader {
     }
     const { code, ast } = babel.transformSync(rawCode, options);
 
+    console.log("=====================programBody=====================");
+    // console.log(ast.program.body);
     console.log(code);
+    console.log("=====================programBody=====================");
 
-    const expressions = ast.program.body.filter(node => {
-      return node.type === "ExpressionStatement";
-    })
+    const expressions = ast.program.body;
+    const statements = this._getExistedStatements(expressions);
 
-    expressions.forEach(expr => {
-      // if (expr.expression.type === "AssignmentExpression") {
-      //   const { left, right } = expr.expression;
-      //   console.log("left", left);
-      //   console.log("right", right);
-      //   left.type === "MemberExpression" && left.
-      // }
-      // if (expr.expression.type === "CallExpression") {
-      //   console.log(expr.expression.arguments[2].properties);
-      // }
-    })
+    const nodeMap = statements.reduce((acc, cur) => {
+      return {
+        ...acc,
+        [cur]: expressions.filter(expr => expr.type === cur)
+      }
+    }, {});
+
+    console.log(nodeMap);
+
+    // console.log("=====================expression=====================");
+    // statements.forEach(stmt => stmt === "ExpressionStatement" && nodeMap[stmt].forEach(node => console.log(node.expression)));
+    // console.log("=====================expression=====================");
+    const returnStmt = [];
+
+    console.log("=====================declaration=====================");
+    statements.forEach(stmt => stmt === "VariableDeclaration" && nodeMap[stmt].forEach(node => {
+      const initData = node.declarations[0].init;
+      if (initData.type === "FunctionExpression") {
+        const initBody = initData.body;
+        if (initBody.type === "BlockStatement") {
+          const innerBody = initBody.body;
+          returnStmt.push(innerBody.filter(i => i.type === "ReturnStatement"));
+        }
+      }
+    }));
+    // const reactComponent = returnStmt.map(stmt => stmt.filter(i => i.argument.callee.property.name === "createElement"));
+    returnStmt.map(stmt => stmt.forEach(i => console.log(i.argument)));
+    // console.log(reactComponent);
+    console.log("=====================declaration=====================");
+  }
+
+  _getExistedStatements(expressions) {
+    const result = [];
+    expressions.map(expr => !result.includes(expr.type) && result.push(expr.type));
+    return result;
   }
 
 }
