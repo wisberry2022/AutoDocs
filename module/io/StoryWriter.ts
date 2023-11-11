@@ -1,8 +1,8 @@
-const fs = require('fs');
-const MdxWriter = require('./MdxWriter.js');
-const JSStoryWriter = require('./JSStoryWriter.js');
+import fs from 'fs';
+import MdxWriter from './MdxWriter.ts';
+import JSStoryWriter from './JSStoryWriter.ts';
 
-class StoryWriter {
+export default class StoryWriter {
 
   FILE_MAP = { story: ".stories.js", mdx: ".mdx" }
   STORIES_PATH = "\\stories\\_stories\\common\\";
@@ -47,5 +47,3 @@ class StoryWriter {
   }
 
 }
-
-module.exports = StoryWriter;

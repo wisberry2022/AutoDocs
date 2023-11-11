@@ -1,8 +1,8 @@
-const fs = require('fs');
-const path = require('path');
-const Logger = require('../Logger.js');
+import fs from 'fs';
+import path from 'path';
+import Logger from '../logger/Logger.ts';
 
-class MdxWriter {
+export default class MdxWriter {
 
   LOG;
   STORY_IMPORT_PATH = "./";
@@ -84,5 +84,3 @@ class MdxWriter {
   }
 
 }
-
-module.exports = MdxWriter;

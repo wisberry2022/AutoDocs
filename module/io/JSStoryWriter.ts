@@ -1,7 +1,7 @@
-const fs = require('fs');
-const Logger = require('../Logger.js');
+import fs from 'fs';
+import Logger from '../logger/Logger.ts';
 
-class JSStoryWriter {
+export default class JSStoryWriter {
 
   LOG;
   COMPONENT_IMPORT_PATH = "../../../component/";
@@ -53,5 +53,3 @@ class JSStoryWriter {
       `} \r\n`;
   }
 }
-
-module.exports = JSStoryWriter;

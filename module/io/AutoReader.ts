@@ -1,8 +1,8 @@
-const fs = require('fs');
-const path = require('path');
-const Logger = require('../Logger.js');
+import fs from 'fs';
+import path from 'path';
+import Logger from '../logger/Logger.ts';
 
-class AutoReader {
+export default class AutoReader {
 
   LOG;
   fileMap = new Map();
@@ -69,5 +69,3 @@ class AutoReader {
 
 
 }
-
-module.exports = AutoReader;
